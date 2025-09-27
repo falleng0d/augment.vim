@@ -325,6 +325,17 @@ function! augment#Accept(...) abort
     endif
 endfunction
 
+" Accept the next word from the currently active suggestion if one is available,
+" otherwise insert the fallback text provided as the first argument
+function! augment#AcceptWord(...) abort
+    " If no fallback was provided, don't add any text
+    let fallback = a:0 >= 1 ? a:1 : ''
+
+    if !augment#suggestion#AcceptWord()
+        call feedkeys(fallback, 'nt')
+    endif
+endfunction
+
 " Display an error message to the user in addition to logging it
 function! augment#DisplayError(message) abort
     " If we have already entered the editor, display the error message

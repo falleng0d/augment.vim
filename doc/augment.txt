@@ -118,21 +118,40 @@ g:augment_node_command
 
 
 ------------------------------------------------------------------------------
-Alternate Keybinds                             *augment-alternate-keybinds*
+Keybinds                                              *augment-keybinds*
 
-By default, tab is used to accept a suggestion. If you want to use a different
-key, create a mapping that calls `augment#Accept()`. The function takes an
-optional arugment used to specify the fallback text to insert if no suggestion
-is available.
+By default, the plugin provides two ways to accept suggestions:
+
+- Tab: Accept one word from the suggestion (partial acceptance)
+- End: Accept the full suggestion (complete acceptance)
+
+Both keys fall back to their normal behavior when no suggestion is available.
+
+                                               *augment-alternate-keybinds*
+Alternate Keybinds~
+
+If you want to use different keys, you can create custom mappings that call
+`augment#AcceptWord()` for partial acceptance or `augment#Accept()` for full
+acceptance. Both functions take an optional argument used to specify the
+fallback text to insert if no suggestion is available.
 
 >vim
-    " Use Ctrl-Y to accept a suggestion
-    inoremap <c-y> <cmd>call augment#Accept()<cr>
+    " Use Ctrl-Y to accept one word from a suggestion
+    inoremap <c-y> <cmd>call augment#AcceptWord()<cr>
 
-    " Use enter to accept a suggestion, falling back to a newline if no suggestion
+    " Use Ctrl-E to accept the full suggestion
+    inoremap <c-e> <cmd>call augment#Accept()<cr>
+
+    " Use enter to accept full suggestion, falling back to a newline if no suggestion
     " is available
     inoremap <cr> <cmd>call augment#Accept("\n")<cr>
 <
+
+The default keybinds can be disabled by setting
+`g:augment_disable_default_mappings = v:true` before the plugin is loaded.
+
+For legacy compatibility, `g:augment_disable_tab_mapping = v:true` will also
+disable all default mappings.
 
 ------------------------------------------------------------------------------
 Highlighting                                         *augment-highlighting*

@@ -122,8 +122,17 @@ function! s:SetupVirtualText() abort
 endfunction
 
 function! s:SetupKeybinds() abort
-    if !exists('g:augment_disable_tab_mapping') || !g:augment_disable_tab_mapping
-        inoremap <tab> <cmd>call augment#Accept("\<tab>")<cr>
+    " Set up new default keybinds: Tab for word acceptance, End for full acceptance
+    if !exists('g:augment_disable_default_mappings') || !g:augment_disable_default_mappings
+        " Tab accepts one word from suggestion, falls back to tab if no suggestion
+        inoremap <tab> <cmd>call augment#AcceptWord("\<tab>")<cr>
+        " End accepts full suggestion, falls back to End key behavior if no suggestion
+        inoremap <end> <cmd>call augment#Accept("\<end>")<cr>
+    endif
+
+    " Legacy support: if the old tab mapping disable flag is set, disable all mappings
+    if exists('g:augment_disable_tab_mapping') && g:augment_disable_tab_mapping
+        " Don't set up any default mappings
     endif
 endfunction
 

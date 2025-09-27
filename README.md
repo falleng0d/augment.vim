@@ -152,24 +152,36 @@ Use the `:Augment chat-toggle` command to open and close the chat panel. When
 the chat panel is closed, the chat conversation will be preserved and can be
 reopened with the same command.
 
-## Alternate Keybinds
+## Keybinds
 
-By default, tab is used to accept a suggestion. If you want to use a
-different key, create a mapping that calls `augment#Accept()`. The function
-takes an optional argument used to specify the fallback text to insert if no
-suggestion is available.
+By default, the plugin provides two ways to accept suggestions:
+
+- **Tab**: Accept one word from the suggestion (partial acceptance)
+- **End**: Accept the full suggestion (complete acceptance)
+
+Both keys fall back to their normal behavior when no suggestion is available.
+
+### Alternate Keybinds
+
+If you want to use different keys, you can create custom mappings:
 
 ```vim
-" Use Ctrl-Y to accept a suggestion
-inoremap <c-y> <cmd>call augment#Accept()<cr>
+" Use Ctrl-Y to accept one word from a suggestion
+inoremap <c-y> <cmd>call augment#AcceptWord()<cr>
 
-" Use enter to accept a suggestion, falling back to a newline if no suggestion
+" Use Ctrl-E to accept the full suggestion
+inoremap <c-e> <cmd>call augment#Accept()<cr>
+
+" Use enter to accept full suggestion, falling back to a newline if no suggestion
 " is available
 inoremap <cr> <cmd>call augment#Accept("\n")<cr>
 ```
 
-The default tab mapping can be disabled by setting
-`g:augment_disable_tab_mapping = v:true` before the plugin is loaded.
+The default keybinds can be disabled by setting
+`g:augment_disable_default_mappings = v:true` before the plugin is loaded.
+
+For legacy compatibility, `g:augment_disable_tab_mapping = v:true` will also
+disable all default mappings.
 
 Completions can be disabled entirely by setting
 `g:augment_disable_completions = v:true` in your vimrc or at any time during
