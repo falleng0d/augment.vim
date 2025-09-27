@@ -156,7 +156,10 @@ reopened with the same command.
 
 By default, the plugin provides two ways to accept suggestions:
 
-- **Tab**: Accept one word from the suggestion (partial acceptance)
+- **Tab**: Accept one word/token from the suggestion (partial acceptance)
+  - For "hello world" → accepts "hello "
+  - For "apt-get install" → accepts "apt-"
+  - For "function()" → accepts "function("
 - **End**: Accept the full suggestion (complete acceptance)
 
 Both keys fall back to their normal behavior when no suggestion is available.
