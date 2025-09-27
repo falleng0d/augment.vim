@@ -161,9 +161,36 @@ function! augment#suggestion#AcceptWord() abort
     " Extract the first word from the first line of the suggestion
     let suggestion_text = lines[0]
 
-    " Find the next word boundary using regex
-    " This matches word characters (letters, digits, underscore) and some common programming symbols
-    let word_match = matchstr(suggestion_text, '^\%(\w\+\|[()[\]{}<>,.;:!?+=\-*/&|^~`"'']\+\|\s\+\)')
+    " Find the next word/token boundary
+    " Strategy:
+    " 1. If starts with whitespace, match whitespace
+    " 2. If starts with word chars, match word chars + first symbol (if any) + trailing spaces
+    " 3. If starts with symbols, match first symbol + trailing spaces
+
+    if suggestion_text =~# '^\s'
+        " If it starts with whitespace, just match the whitespace
+        let word_match = matchstr(suggestion_text, '^\s\+')
+    elseif suggestion_text =~# '^\w'
+        " Starts with word characters - match word chars, then first symbol, then spaces
+        let word_part = matchstr(suggestion_text, '^\w\+')
+        let remaining_after_word = strpart(suggestion_text, len(word_part))
+
+        " Check for a single symbol immediately following the word
+        let symbol_part = matchstr(remaining_after_word, '^[^a-zA-Z0-9_\s]')
+        let remaining_after_symbol = strpart(remaining_after_word, len(symbol_part))
+
+        " Check for trailing spaces
+        let space_part = matchstr(remaining_after_symbol, '^\s\+')
+
+        let word_match = word_part . symbol_part . space_part
+    else
+        " Starts with symbols - match first symbol + trailing spaces
+        let symbol_part = matchstr(suggestion_text, '^[^a-zA-Z0-9_\s]')
+        let remaining_after_symbol = strpart(suggestion_text, len(symbol_part))
+        let space_part = matchstr(remaining_after_symbol, '^\s\+')
+
+        let word_match = symbol_part . space_part
+    endif
 
     if empty(word_match)
         " If no word pattern found, take the first character
